@@ -1,0 +1,157 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>新発田市中曽根町ゴミ出し日検索アプリ</title>
+<style>
+/* buttonタグにstyleを設定 */
+button {
+    /* 文字の大きさを設定 */
+    font-size: 25px;
+    /* ブロック要素に設定（縦に並ぶように） */
+    display: block;
+    /* 上下の余白を15px にしている。 左右の余白はautoにしている(中央に寄るように) */
+    margin: 15px auto;
+}
+</style>
+<script>
+
+
+// moeru関数を定義
+function moeru() {
+    // 変数todayに現在の年月日を入れる
+    var today = new Date();
+    // 曜日のデータを取り出す。
+    var weekday = today.getDay();
+    var date = today.getDate();
+    var month = today.getMonth() + 1;
+    if (month > 3) {
+        alert("次の収集日は、市のホームページで確認してください。");
+        return;
+    }
+    // もし月が2月かつ日にちが21日または、月が2月かつ日にちが22日だったら
+    if  (month == 2 && date == 21 || month == 2 && date == 22) {
+        alert("次の収集日は2月25日(土)です。");
+        //　元のプログラムに戻る。(41行目に行かないようにする)
+        return;
+    }
+    if  (month == 3 && date == 18 || month == 3 && date == 19 || month == 3 && date == 20) {
+        alert("次の収集日は3月23日(木)です。");
+        //　元のプログラムに戻る。
+        return;
+    }
+    // もし曜日が月、水、金だったら
+    if (weekday == 1 || weekday == 3 || weekday == 5) {
+        // 年月日のデータに1を足している
+        today.setDate(date + 1);
+        var month = today.getMonth() + 1;
+        var date = today.getDate();
+        var weekday = today.getDay();
+        // 数字を文字に直すために、このリストを作っている。
+        var weekChars = ["(日)", "(月)", "(火)", "(水)", "(木)", "(金)", "(土)"];
+        alert("次の収集日は" + month + "月" + date + "日" + weekChars[weekday] + "です。");
+    } else if (weekday == 0 || weekday == 2 || weekday == 4) {
+        today.setDate(date + 2);
+        var month = today.getMonth() + 1;
+        var date = today.getDate();
+        var weekday = today.getDay();
+        var weekChars = ["(日)", "(月)", "(火)", "(水)", "(木)", "(金)", "(土)"];
+        alert("次の収集日は" + month + "月" + date + "日" + weekChars[weekday] + "です。");
+    } else {
+        today.setDate(date + 3);
+        var month = today.getMonth() + 1;
+        var date = today.getDate();
+        var weekday = today.getDay();
+        var weekChars = ["(日)", "(月)", "(火)", "(水)", "(木)", "(金)", "(土)"];
+        alert("次の収集日は" + month + "月" + date + "日" + weekChars[weekday] + "です。");
+    }
+}
+
+// 後で切り取りやすいように、文字列で４桁の数字をいれる。
+// moenaiCalender[0]とすれば1024と出るようになる。（1121を出したいときには[1]とすれば出る）
+var moenaiCalendar = ["1024", "1121", "1219", "1323", "1420", "1520"];
+var akikanCalendar = ["1128", "1212", "1226", "1316", "1327", "1413", "1427", "1513", "1527"];
+var styrofoamCalendar = ["1212", "1316", "1413", "1513"];
+var oldClothCalendar = ["1226", "1330", "1427", "1527"];
+var usedPaperCalendar = ["1226", "1312", "1330", "1409","1424","1509","1524"];
+var emptyBottleCalender = ["1313", "1410", "1510"];
+
+
+// answer関数を定義(calendarリストを受け取る)
+function answer(calendar){
+    // 変数todayに現在の年月日を入れる。
+    var today = new Date();
+    // 月のデータを取り出す。(+1しているのは0から数字が始まるため。)
+    var month = today.getMonth() + 1;
+    if (month > 3) {
+        alert("次の収集日は、市のホームページで確認してください。");
+        return
+    }
+    
+    // 1、2、3月に+12をして13、14、15月にしている。
+    if (month < 4) {
+        month = month + 12;
+    }
+    //　日のデータを取り出す。
+    var date = today.getDate();
+    //変数iを最初に0にする。iがcalendar.lengthより小さい間繰り返す。iを１ずつ増やす。
+    for (var i = 0; i < calendar.length; i++) {
+        //もし(if)今日の月がcalendar[i]の月と等しかったら
+        if (month == calendar[i].slice(0,2)) {
+            //もし今日の日がcalendar[i]の日より小さかったら
+            if (date < calendar[i].slice(2,4)) {
+                // 13,14,15月を元に戻す(1月、2月、3月にする)
+                if (month > 12) {
+                    month = month - 12;
+                }
+                // 変数answerDateに、次の収集日の年月日のdateオブジェクトを入れる。
+                var answerDate = new Date(2023, month - 1, calendar[i].slice(2,4));
+                // 変数answerDateの曜日を取得している。(0が日曜日、6が土曜日)
+                var answerDay = answerDate.getDay();
+                // 数字を文字に直すために、このリストを作っている。
+                var weekChars = ["(日)", "(月)", "(火)", "(水)", "(木)", "(金)", "(土)"];
+                alert("次の収集日は" + month + "月" + calendar[i].slice(2,4) + "日" + weekChars[answerDay] + "です。");
+                //ループを抜ける
+                break;
+            } else if (month == 15) {
+                alert("次の収集日は、市のホームページで確認してください。");
+                return;
+            }
+        //今日の月がcalendarの月よりも小さければ
+        } else if (month < calendar[i].slice(0,2)) {
+            // 次の月を答えるから+1をする。
+            month = month + 1;
+            if (month > 12) {
+                month = month - 12;
+            }
+            var answerDate = new Date(2023, month - 1, calendar[i].slice(2,4));
+            var answerDay = answerDate.getDay();
+            var weekChars = ["(日)", "(月)", "(火)", "(水)", "(木)", "(金)", "(土)"];
+            alert("次の収集日は" + month + "月" + calendar[i].slice(2,4) + "日" + weekChars[answerDay] + "です。");
+            break;
+        }
+    }    
+}
+</script>
+</head>
+<!--文字を全体的に中央に寄せる-->
+<body style="text-align: center;">
+<h1>新発田市中曽根町<br>ゴミ出し日検索アプリ</h1>
+<p>2023年3月まで</p>
+<!--クリックしたらmoeru関数を実行する-->
+<button onclick="moeru()">燃えるごみ</button>
+<!--クリックしたらanswer関数にmoenaiCalendarのリストを渡して実行する-->
+<button onclick="answer(moenaiCalendar)">燃えないごみ</button>
+<!--クリックしたらanswer関数にakikanCalendarのリストを渡して実行する-->
+<button onclick="answer(akikanCalendar)">空き缶等</button>
+<!--クリックしたらanswer関数にstyrofoamCalendarのリストを渡して実行する-->
+<button onclick="answer(styrofoamCalendar)">発泡スチロール</button>
+<!--クリックしたらanswer関数にoldClothCalendarのリストを渡して実行する-->
+<button onclick="answer(oldClothCalendar)">古布</button>
+<!--クリックしたらanswer関数にusedPaperCalendarのリストを渡して実行する-->
+<button onclick="answer(usedPaperCalendar)">新聞、段ボール、雑誌チラシ</button>
+<!--クリックしたらanswer関数にemptybottleCalendarのリスト渡して実行する-->
+<button onclick="answer(emptyBottleCalender)">空きびん</button>
+</body>
+</html>
